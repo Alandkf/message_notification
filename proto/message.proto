@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package message;
+
+option go_package = "myapp/proto";
+
+service MessageService {
+	rpc SendMessage(SendMessageRequest) returns (MessageResponse);
+	rpc ReadMessages(ReadMessagesRequest) returns (ReadMessagesResponse);
+}
+
+message SendMessageRequest {
+	string sender_username = 1;
+	string receiver_username = 2;
+	string message = 3;
+}
+
+message MessageResponse {
+	string message = 1;
+}
+
+message ReadMessagesRequest {
+	string username = 1;
+}
+
+message ReadMessagesResponse {
+	repeated Notification notifications = 1;
+}
+
+message Notification {
+	uint32 id = 1;
+	string sender_username = 2;
+	string message = 3;
+}

@@ -19,6 +19,9 @@ func InitDB() *gorm.DB {
 
   // Auto-migrate the User model
   db.AutoMigrate(&models.User{})
+  log.Println("Auto-migrated the User model")
+  db.AutoMigrate(&models.Notification{})
+  log.Println("Auto-migrated the Notification model")
 
   return db
 }

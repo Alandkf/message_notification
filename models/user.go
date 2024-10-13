@@ -8,10 +8,3 @@ type User struct {
   Username string `gorm:"unique"`
   Password string
 }
-
-type Message struct {
-  gorm.Model
-  SenderID   uint
-  ReceiverID uint
-  Message    string
-}
