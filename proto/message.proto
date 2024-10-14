@@ -4,31 +4,51 @@ package message;
 
 option go_package = "myapp/proto";
 
+// Message service for sending and reading messages
 service MessageService {
-	rpc SendMessage(SendMessageRequest) returns (MessageResponse);
-	rpc ReadMessages(ReadMessagesRequest) returns (ReadMessagesResponse);
+    rpc SendMessage(SendMessageRequest) returns (MessageResponse);
+    rpc ReadMessages(ReadMessagesRequest) returns (ReadMessagesResponse);
+    rpc ListContacts(ContactListRequest) returns (ContactListResponse); // To list people with unread messages
 }
 
+// SendMessage Request/Response
 message SendMessageRequest {
-	string sender_username = 1;
-	string receiver_username = 2;
-	string message = 3;
+    string senderUsername = 1;
+    string receiverUsername = 2;
+    string message = 3;
 }
 
 message MessageResponse {
-	string message = 1;
+    string message = 1;
 }
 
+// ReadMessages Request/Response (messages from a specific user)
 message ReadMessagesRequest {
-	string username = 1;
+    string username = 1;
+    string chatWith = 2; // Who you're chatting with
 }
 
 message ReadMessagesResponse {
-	repeated Notification notifications = 1;
+    repeated Notification messages = 1; // List of messages
 }
 
 message Notification {
-	uint32 id = 1;
-	string sender_username = 2;
-	string message = 3;
+    uint32 id = 1;
+    string senderUsername = 2;
+    string message = 3;
+    bool isSeen = 4;
+}
+
+// Request/Response for listing people with unread messages
+message ContactListRequest {
+    string username = 1; // Whose contacts we are retrieving
+}
+
+message ContactListResponse {
+    repeated Contact contacts = 1;
+}
+
+message Contact {
+    string username = 1; // Contact name
+    int32 unreadMessages = 2; // Count of unread messages
 }

@@ -21,6 +21,7 @@ func main() {
 	dbConn := db.InitDB()
 	fmt.Println("DB Connection: ", dbConn)
 	grpcServer := grpc.NewServer()
+
 	authService := &server.AuthServiceServer{DB: dbConn}
 	messageService := &server.MessageServiceServer{DB: dbConn}
 

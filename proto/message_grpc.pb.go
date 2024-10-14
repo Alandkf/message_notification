@@ -21,14 +21,18 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	MessageService_SendMessage_FullMethodName  = "/message.MessageService/SendMessage"
 	MessageService_ReadMessages_FullMethodName = "/message.MessageService/ReadMessages"
+	MessageService_ListContacts_FullMethodName = "/message.MessageService/ListContacts"
 )
 
 // MessageServiceClient is the client API for MessageService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// Message service for sending and reading messages
 type MessageServiceClient interface {
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
 	ReadMessages(ctx context.Context, in *ReadMessagesRequest, opts ...grpc.CallOption) (*ReadMessagesResponse, error)
+	ListContacts(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (*ContactListResponse, error)
 }
 
 type messageServiceClient struct {
@@ -59,12 +63,25 @@ func (c *messageServiceClient) ReadMessages(ctx context.Context, in *ReadMessage
 	return out, nil
 }
 
+func (c *messageServiceClient) ListContacts(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (*ContactListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ContactListResponse)
+	err := c.cc.Invoke(ctx, MessageService_ListContacts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessageServiceServer is the server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility.
+//
+// Message service for sending and reading messages
 type MessageServiceServer interface {
 	SendMessage(context.Context, *SendMessageRequest) (*MessageResponse, error)
 	ReadMessages(context.Context, *ReadMessagesRequest) (*ReadMessagesResponse, error)
+	ListContacts(context.Context, *ContactListRequest) (*ContactListResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -80,6 +97,9 @@ func (UnimplementedMessageServiceServer) SendMessage(context.Context, *SendMessa
 }
 func (UnimplementedMessageServiceServer) ReadMessages(context.Context, *ReadMessagesRequest) (*ReadMessagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadMessages not implemented")
+}
+func (UnimplementedMessageServiceServer) ListContacts(context.Context, *ContactListRequest) (*ContactListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListContacts not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 func (UnimplementedMessageServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +158,24 @@ func _MessageService_ReadMessages_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessageService_ListContacts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).ListContacts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessageService_ListContacts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).ListContacts(ctx, req.(*ContactListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +190,10 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReadMessages",
 			Handler:    _MessageService_ReadMessages_Handler,
+		},
+		{
+			MethodName: "ListContacts",
+			Handler:    _MessageService_ListContacts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
