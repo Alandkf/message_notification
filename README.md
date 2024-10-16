@@ -1,67 +1,125 @@
-Messaging Application - gRPC Service
-Overview
-This project is a basic messaging application built using Go, gRPC, and MySQL. Users can register, log in, send messages, and interact with contacts. The application implements client-server communication through gRPC, providing a seamless experience for managing authentication and messaging services.
+# Messaging Application - gRPC Service
 
-Features
-User Registration & Login:
+## Overview
+This is a Go-based messaging application that uses gRPC for communication between the client and server. The application allows users to register, log in, and exchange messages with other users. It provides a simple and efficient framework to manage user authentication and messaging features.
 
-Users can register with a unique username and password.
-Upon successful registration, users are directed to log in.
-Login credentials are verified by the server to authenticate users.
-Messaging Service:
+## Key Features
 
-Once logged in, users can access their chat session.
-The application displays a list of contacts with unread messages.
-Users can select a contact to view their chat history and send messages in real time.
-Session Management:
+### User Registration and Login:
+- New users can register with a unique username and password.
+- Registered users can log in to their accounts.
+- Upon successful login, users are directed to the messaging interface.
 
-Logged-in users can choose between:
-Viewing and sending messages.
-Logging out.
-Shutting down the server.
-The server handles multiple user sessions and allows for clean disconnection when needed.
-Project Flow
-The application follows this basic flow:
+### Messaging Service:
+- View contacts with unread messages.
+- Read message history with a selected contact.
+- Send new messages to the selected contact.
 
-Start the Application:
+### Session Management:
+Logged-in users can:
+- View and send messages.
+- Log out of the application.
+- Shut down the server.
 
-The client connects to the gRPC server.
-Main Menu:
+## Flowchart Available:
+A detailed flowchart explaining the application’s flow and logic is available in the project folder (`flowchart.png`).
 
-The menu offers three options: Login, Register, and Server Shutdown.
-The server can be shut down from this menu by selecting option 0.
-User Registration:
+## Project Flow (Based on Flowchart)
+1. **Start the Application**: The client connects to the gRPC server running on localhost:50051.
+2. **Main Menu**: Users can:
+   - Register (Option 2).
+   - Log in (Option 1).
+   - Shut down the server (Option 0).
+3. **Registration**: Users enter their username and password to register. After successful registration, users are logged in automatically.
+4. **Login**: Users enter their credentials to log in. If login is successful, the user enters the messaging interface.
+5. **Messaging Interface**: Users can:
+   - View contacts with unread messages.
+   - Select a contact to view the chat history.
+   - Send a message to the selected contact.
+6. **Logout/Shutdown**: Users can log out and return to the main menu. The server can be shut down through the menu by choosing the relevant option.
 
-Users choosing to register are prompted to enter their username and password.
-Registration success is indicated by a message, and the user is prompted to log in.
-User Login:
+## Project Structure
+```bash
+├── client/
+│   ├── main.go               # Client-side logic (registration, login, messaging).
+├── server/
+│   ├── main.go               # Server-side logic (handling gRPC services).
+├── proto/
+│   ├── auth.proto            # Protobuf definitions for authentication service.
+│   ├── message.proto         # Protobuf definitions for messaging service.
+├── db/
+│   ├── db.go                 # Database connection setup.
+├── flowchart.png             # Flowchart illustrating the application's flow.
+└── README.md                 # Project documentation.
+```
+# Messaging Application - gRPC Service
 
-After entering valid credentials, users are taken to their session where they can:
-View unread messages.
-Logout.
-Shut down the server.
-Messaging Interface:
+## gRPC Services
 
-Users can view their contacts and select a conversation.
-Once a conversation is selected, the user can view the chat history and send new messages.
-Logout/Shutdown:
+### Authentication Service (AuthService):
+- **Register**: Registers a new user in the system.
+- **Login**: Authenticates an existing user based on their credentials.
 
-Users can log out and return to the main menu.
-The server can be shut down cleanly through the menu.
+### Message Service (MessageService):
+- **ListContacts**: Retrieves the user's contact list showing unread messages.
+- **ReadMessages**: Fetches chat history with a selected contact.
+- **SendMessage**: Allows the user to send messages to a selected contact.
 
-Folder Structure
-├── proto/               # Contains .proto file(s) for defining gRPC services.
-├── client/              # Contains the client logic for connecting to the gRPC server.
-│   ├── main.go          # Entry point for the client-side application.
-├── server/              # Contains the server logic for managing gRPC services.
-│   ├── main.go          # Entry point for the server-side application.
-├── models/              # Contains database models and connection setup.
-│   ├── user.go          # User model.
-│   ├── message.go       # Message model.
-├── README.md            # Project documentation.
+## Prerequisites
+- **Go** (v1.19+)
+- **gRPC** (Go gRPC libraries)
+- **MySQL** (Database for user and message storage)
+- **Protobuf Compiler** (for generating Go files from .proto definitions)
 
-Prerequisites
-Go (1.19 or higher)
-gRPC (gRPC-Go libraries)
-MySQL (for database storage)
-Protobuf Compiler (for generating Go code from .proto files)
+## Installation
+
+1. **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd messaging-application
+    ```
+
+2. **Install dependencies**:
+    ```bash
+    go mod tidy
+    ```
+
+3. **Set up the database**:
+   - Ensure MySQL is running.
+   - Create a database for storing users and messages.
+   - Update the database connection details in `db/db.go`.
+
+4. **Generate gRPC code from .proto files**:
+    ```bash
+    protoc --go_out=. --go-grpc_out=. proto/*.proto
+    ```
+
+5. **Run the server**:
+    ```bash
+    go run server/main.go
+    ```
+
+6. **Run the client**:
+    ```bash
+    go run client/main.go
+    ```
+
+## Usage
+- **Launch the server and client**:
+  - Start the server using `go run server/main.go`.
+  - Start the client using `go run client/main.go`.
+
+- **Interact with the application**:
+  - From the main menu, register, log in, or shut down the server.
+  - Once logged in, view contacts, read message history, and send messages.
+
+## Technologies Used
+- **Go**: Backend logic for client and server.
+- **gRPC**: Client-server communication framework.
+- **MySQL**: Database for storing users and messages.
+- **Protobuf**: Defines the structure of data transmitted between client and server.
+
+## Additional Resources
+The project flowchart provides a visual representation of the user flow and interaction in the application.
+![Project Flowchart](plan/flowchart.png)
+
